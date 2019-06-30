@@ -9,7 +9,6 @@ function createWindow() {
     win = new BrowserWindow({
         width: 800,
         height: 800,
-        backgroundcolor: '#ffffff',
         icon: `file://${__dirname}/dist/assets/logo.png`
     })
 
