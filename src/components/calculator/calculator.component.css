@@ -1,0 +1,7 @@
+table {
+    width: 100%;
+  }
+
+.select-custom-width {
+    width: 75px !important;
+}
