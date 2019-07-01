@@ -1,5 +1,5 @@
 import { FoodConstants } from './../../core/constants';
-import { FoodComponentsModel, FoodDataModel } from './../../models/calculator-model';
+import { FoodComponentsModel, FoodDataModel, TotalFoodComponentsModel } from './../../models/calculator-model';
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import {MatOptionSelectionChange} from '@angular/material';
@@ -20,10 +20,12 @@ export class CalculatorComponent implements OnInit {
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   foods: FoodDataModel[] = [{name: 'Pollo', weight: 100,weightUnit: 'gr', proteins: 22.2, fat: 4.3, hydrates: 0}, {name: 'Ternera', weight: 100,weightUnit: 'gr', proteins: 52.2, fat: 2.3, hydrates: 0}];
   quantities: number[] = [1,2,3,4,5,6,7,8,9,10];
+  total: TotalFoodComponentsModel;
   constructor() { }
 
   ngOnInit() {
     this.tableIdCounter = 0;
+    this.total = new TotalFoodComponentsModel();
   }
 
   //public methods
@@ -49,7 +51,7 @@ export class CalculatorComponent implements OnInit {
 
   public updateFoodData(event: MatOptionSelectionChange, food: FoodComponentsModel, foodData: FoodDataModel): void {
 
-    if(!event.source.selected){
+    if(event.source !== undefined && !event.source.selected){
       return;
     }
 
@@ -66,16 +68,12 @@ export class CalculatorComponent implements OnInit {
     let index = this.getIndexOfElementByTableId(food.tableId);
 
     this.ELEMENT_DATA[index] = food;
+    this.UpdateTotal();
     this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   }
 
-  public updateQuantity(event: MatOptionSelectionChange, food: FoodComponentsModel, quantity: number): void{
-
-    if(!event.source.selected){
-      return;
-    }
-
-    food.quantity = quantity;
+  public updateQuantity(event: any, food: FoodComponentsModel): void {
+    food.quantity = event.target.value;
 
     if(food.food === undefined || food.food === ''){   
       let index = this.getIndexOfElementByTableId(food.tableId);
@@ -91,30 +89,35 @@ export class CalculatorComponent implements OnInit {
   //private methods
   private getIndexOfElementByTableId(tableId: number): number{
     let updateItem = this.ELEMENT_DATA.find(x => x.tableId == tableId);
-    console.log('PARA ACTUALIZAR: ' + updateItem.tableId);
     let index = this.ELEMENT_DATA.indexOf(updateItem);
-    console.log('EL INDICE: ' + index);
 
     return index;
   }
 
   private fillFoodData(food: FoodComponentsModel, foodData: FoodDataModel){
-    food.fat = foodData.fat;
-    food.hydrates = foodData.hydrates;
-    food.proteins = foodData.proteins;
+    food.fat = foodData.fat * food.quantity;
+    food.hydrates = foodData.hydrates * food.quantity;
+    food.proteins = foodData.proteins * food.quantity;
     food.food = foodData.name;
-    food.kcal =  this.calculateKcal(food);
+    food.kcal =  this.calculateKcal(foodData, food.quantity);
 
     return food;
   }
-  private calculateKcal(food: FoodComponentsModel): number {
-    return food.quantity * ((food.proteins * FoodConstants.PROTEINS_PARAMETER) 
+  private calculateKcal(food: FoodDataModel, quantity: number): number {
+    return quantity * ((food.proteins * FoodConstants.PROTEINS_PARAMETER) 
                           + (food.hydrates * FoodConstants.HYDRATES_PARAMETER) 
                           + (food.fat * FoodConstants.FAT_PARAMETER));
   }
 
   private getFoodDataByName(name: string): FoodDataModel {
     return this.foods.find(x => x.name === name);
+  }
+
+  private UpdateTotal(): void {
+    this.total.totalKcal = this.ELEMENT_DATA.map(x => x.kcal).reduce((acc, value) => acc + value, 0);
+    this.total.totalProteins = this.ELEMENT_DATA.map(x => x.proteins).reduce((acc, value) => acc + value, 0);
+    this.total.totalHydrates = this.ELEMENT_DATA.map(x => x.hydrates).reduce((acc, value) => acc + value, 0);
+    this.total.totalFat = this.ELEMENT_DATA.map(x => x.fat).reduce((acc, value) => acc + value, 0);
   }
 }
 
