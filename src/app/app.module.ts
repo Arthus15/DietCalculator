@@ -3,14 +3,14 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MatButtonModule, MatCheckboxModule, MatToolbarModule} from '@angular/material';
 import { MaterialModule } from 'src/material-module';
+import { CalculatorComponent } from 'src/components/calculator/calculator.component';
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    CalculatorComponent
   ],
   imports: [
     BrowserModule,
