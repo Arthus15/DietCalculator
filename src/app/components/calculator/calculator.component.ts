@@ -1,8 +1,9 @@
-import { FoodConstants } from './../../core/constants';
 import { FoodComponentsModel, FoodDataModel, TotalFoodComponentsModel } from './../../models/calculator-model';
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import {MatOptionSelectionChange} from '@angular/material';
+import { ElectronService } from '../../providers/electron.service';
+import { MatOptionSelectionChange } from '@angular/material/core';
+import { FoodConstants } from '../../models/constants';
 
 
 @Component({
@@ -21,11 +22,19 @@ export class CalculatorComponent implements OnInit {
   foods: FoodDataModel[] = [{name: 'Pollo', weight: 100,weightUnit: 'gr', proteins: 22.2, fat: 4.3, hydrates: 0}, {name: 'Ternera', weight: 100,weightUnit: 'gr', proteins: 52.2, fat: 2.3, hydrates: 0}];
   quantities: number[] = [1,2,3,4,5,6,7,8,9,10];
   total: TotalFoodComponentsModel;
-  constructor() { }
+  constructor(private _electronService: ElectronService) { }
 
   ngOnInit() {
     this.tableIdCounter = 0;
     this.total = new TotalFoodComponentsModel();
+    this._electronService.fs.readFile('./src/prueba.txt', function(data, err){
+      if(err){
+        console.log('Ha habido un error: ' + err);
+      }
+      else{
+        console.log('HEMOS LEIDO: ' + data);
+      }
+    });
   }
 
   //public methods
