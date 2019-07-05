@@ -1,3 +1,4 @@
+import { FoodService } from './../../providers/food.service';
 import { FoodComponentsModel, FoodDataModel, TotalFoodComponentsModel } from './../../models/calculator-model';
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
@@ -19,22 +20,17 @@ export class CalculatorComponent implements OnInit {
   ELEMENT_DATA: FoodComponentsModel[] = [];
   displayedColumns: string[] = ['quantity', 'food', 'proteins', 'fat','hydrates','kcal'];
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-  foods: FoodDataModel[] = [{name: 'Pollo', weight: 100,weightUnit: 'gr', proteins: 22.2, fat: 4.3, hydrates: 0}, {name: 'Ternera', weight: 100,weightUnit: 'gr', proteins: 52.2, fat: 2.3, hydrates: 0}];
+  // foods: FoodDataModel[] = [{name: 'Pollo', weight: 100,weightUnit: 'gr', proteins: 22.2, fat: 4.3, hydrates: 0}, {name: 'Ternera', weight: 100,weightUnit: 'gr', proteins: 52.2, fat: 2.3, hydrates: 0}];
+  foods: FoodDataModel[] = []
   quantities: number[] = [1,2,3,4,5,6,7,8,9,10];
   total: TotalFoodComponentsModel;
-  constructor(private _electronService: ElectronService) { }
+  constructor(private _foodService: FoodService) { }
 
   ngOnInit() {
     this.tableIdCounter = 0;
     this.total = new TotalFoodComponentsModel();
-    this._electronService.fs.readFile('./src/prueba.txt', function(data, err){
-      if(err){
-        console.log('Ha habido un error: ' + err);
-      }
-      else{
-        console.log('HEMOS LEIDO: ' + data);
-      }
-    });
+    this.foods = this._foodService.loadFood();
+    console.log('Data loaded: ' + this.foods[0]);
   }
 
   //public methods
