@@ -24,8 +24,8 @@
                     <ng-container matColumnDef="food">
                       <th mat-header-cell *matHeaderCellDef style="width: 20%"> Alimento </th>
                       <td mat-cell *matCellDef="let element"> 
-                            <mat-form-field class="select-custom-width">
-                                    <mat-select >
+                            <mat-form-field style="width: 300px">
+                                    <mat-select>
                                       <mat-option *ngFor="let food of foods" [value]="food" 
                                       (onSelectionChange)="updateFoodData($event,element, food)" > 
                                       {{food.name}}
