@@ -1,4 +1,5 @@
-<mat-card>
+<div *ngIf="hasFileLoad">
+  <mat-card>
     <mat-card-header>
         <mat-card-title>Calculator</mat-card-title>
     </mat-card-header>
@@ -23,8 +24,8 @@
                     <ng-container matColumnDef="food">
                       <th mat-header-cell *matHeaderCellDef style="width: 20%"> Alimento </th>
                       <td mat-cell *matCellDef="let element"> 
-                            <mat-form-field class="select-custom-width">
-                                    <mat-select >
+                            <mat-form-field style="width: 300px">
+                                    <mat-select>
                                       <mat-option *ngFor="let food of foods" [value]="food" 
                                       (onSelectionChange)="updateFoodData($event,element, food)" > 
                                       {{food.name}}
@@ -71,3 +72,16 @@
                   <button mat-icon-button (click)="removeRow()"><mat-icon>remove</mat-icon></button>
     </mat-card-content>
 </mat-card>
+</div>
+<div *ngIf="!hasFileLoad">
+  <mat-card>
+    <mat-card-header>
+        <mat-card-title>Selecciona archivo</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      Por favor, selecciona el fichero que contiene los datos de los alimentos: 
+      <input id="file-upload" type="file" accept=".txt" (change)="fileUpload($event)">
+      
+    </mat-card-content>
+</mat-card>
+</div>
