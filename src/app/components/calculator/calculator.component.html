@@ -1,4 +1,5 @@
-<mat-card>
+<div *ngIf="hasFileLoad">
+  <mat-card>
     <mat-card-header>
         <mat-card-title>Calculator</mat-card-title>
     </mat-card-header>
@@ -71,3 +72,16 @@
                   <button mat-icon-button (click)="removeRow()"><mat-icon>remove</mat-icon></button>
     </mat-card-content>
 </mat-card>
+</div>
+<div *ngIf="!hasFileLoad">
+  <mat-card>
+    <mat-card-header>
+        <mat-card-title>Selecciona archivo</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      Por favor, selecciona el fichero que contiene los datos de los alimentos: 
+      <input id="file-upload" type="file" accept=".txt" (change)="fileUpload($event)">
+      
+    </mat-card-content>
+</mat-card>
+</div>

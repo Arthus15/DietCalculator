@@ -13,9 +13,8 @@ import { FoodConstants } from '../../models/constants';
   styleUrls: ['./calculator.component.css']
 })
 export class CalculatorComponent implements OnInit {
-  //constants
-   PROTEINS_CONST: number = 4;
-
+  
+  hasFileLoad : boolean = false;
   tableIdCounter: number;
   ELEMENT_DATA: FoodComponentsModel[] = [];
   displayedColumns: string[] = ['quantity', 'food', 'proteins', 'fat','hydrates','kcal'];
@@ -29,8 +28,6 @@ export class CalculatorComponent implements OnInit {
   ngOnInit() {
     this.tableIdCounter = 0;
     this.total = new TotalFoodComponentsModel();
-    this.foods = this._foodService.loadFood();
-    console.log('Data loaded: ' + this.foods[0]);
   }
 
   //public methods
@@ -89,6 +86,17 @@ export class CalculatorComponent implements OnInit {
       let foodData = this.getFoodDataByName(food.food);
       this.updateFoodData(event,food, foodData);
     }
+  }
+
+  public fileUpload(event : Event) {
+    var reader = new FileReader();
+    console.log('EL EVENTO: ' + (<HTMLInputElement>event.target).files[0]);
+    reader.readAsText((<HTMLInputElement>event.target).files[0]);
+    var me = this;
+    reader.onload = function () {
+      me.foods = me._foodService.loadFood(reader.result.toString());
+    }
+    this.hasFileLoad = true;
   }
 
   //private methods

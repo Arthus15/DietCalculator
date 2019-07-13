@@ -11,12 +11,10 @@ export class FoodService {
 
   constructor(private _electronService: ElectronService) { }
 
-  public loadFood(): FoodDataModel[] {
+  public loadFood(data : string): FoodDataModel[] {
 
     try{      
-    //Read File
-    var data = this._electronService.fs.readFileSync('dist/db.txt', {encoding: 'utf8'});  
-
+      
     var parsedData = data.split('/');
 
     for(var i = 0; i < parsedData.length; i++){
