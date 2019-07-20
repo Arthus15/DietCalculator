@@ -112,18 +112,18 @@ export class CalculatorComponent implements OnInit {
   }
 
   private fillFoodData(food: FoodComponentsModel, foodData: FoodDataModel){
-    food.fat = foodData.fat * food.quantity;
-    food.hydrates = foodData.hydrates * food.quantity;
-    food.proteins = foodData.proteins * food.quantity;
+    food.fat = parseFloat((foodData.fat * food.quantity).toFixed(2));
+    food.hydrates = parseFloat((foodData.hydrates * food.quantity).toFixed(2));
+    food.proteins = parseFloat((foodData.proteins * food.quantity).toFixed(2));
     food.food = foodData.name;
-    food.kcal =  this.calculateKcal(foodData, food.quantity);
+    food.kcal =  parseFloat(this.calculateKcal(foodData, food.quantity).toFixed(2));
 
     return food;
   }
   private calculateKcal(food: FoodDataModel, quantity: number): number {
-    return quantity * ((food.proteins * FoodConstants.PROTEINS_PARAMETER) 
+    return (quantity * ((food.proteins * FoodConstants.PROTEINS_PARAMETER) 
                           + (food.hydrates * FoodConstants.HYDRATES_PARAMETER) 
-                          + (food.fat * FoodConstants.FAT_PARAMETER));
+                          + (food.fat * FoodConstants.FAT_PARAMETER)));
   }
 
   private getFoodDataByName(name: string): FoodDataModel {
@@ -131,10 +131,10 @@ export class CalculatorComponent implements OnInit {
   }
 
   private UpdateTotal(): void {
-    this.total.totalKcal = this.ELEMENT_DATA.map(x => x.kcal).reduce((acc, value) => acc + value, 0);
-    this.total.totalProteins = this.ELEMENT_DATA.map(x => x.proteins).reduce((acc, value) => acc + value, 0);
-    this.total.totalHydrates = this.ELEMENT_DATA.map(x => x.hydrates).reduce((acc, value) => acc + value, 0);
-    this.total.totalFat = this.ELEMENT_DATA.map(x => x.fat).reduce((acc, value) => acc + value, 0);
+    this.total.totalKcal = parseFloat(this.ELEMENT_DATA.map(x => x.kcal).reduce((acc, value) => acc + value, 0).toFixed(2));
+    this.total.totalProteins = parseFloat(this.ELEMENT_DATA.map(x => x.proteins).reduce((acc, value) => acc + value, 0).toFixed(2));
+    this.total.totalHydrates = parseFloat(this.ELEMENT_DATA.map(x => x.hydrates).reduce((acc, value) => acc + value, 0).toFixed(2));
+    this.total.totalFat = parseFloat(this.ELEMENT_DATA.map(x => x.fat).reduce((acc, value) => acc + value, 0).toFixed(2));
   }
 }
 
