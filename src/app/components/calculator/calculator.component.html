@@ -26,6 +26,13 @@
                       <td mat-cell *matCellDef="let element"> 
                             <mat-form-field style="width: 300px">
                                     <mat-select>
+                                      <mat-option>
+                                          <ngx-mat-select-search [placeholderLabel]="'Buscar...'"
+                                                                 [noEntriesFoundLabel]="'No coincide ningún alimento'"
+                                          ngModel (ngModelChange)="filterMyOptions($event)">
+                                          <mat-icon ngxMatSelectSearchClear>cancel</mat-icon>
+                                        </ngx-mat-select-search>
+                                      </mat-option>
                                       <mat-option *ngFor="let food of foods" [value]="food" 
                                       (onSelectionChange)="updateFoodData($event,element, food)" > 
                                       {{food.name}}

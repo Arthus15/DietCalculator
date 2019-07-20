@@ -21,6 +21,7 @@ export class CalculatorComponent implements OnInit {
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   // foods: FoodDataModel[] = [{name: 'Pollo', weight: 100,weightUnit: 'gr', proteins: 22.2, fat: 4.3, hydrates: 0}, {name: 'Ternera', weight: 100,weightUnit: 'gr', proteins: 52.2, fat: 2.3, hydrates: 0}];
   foods: FoodDataModel[] = []
+  fullFoods: FoodDataModel[] = []
   quantities: number[] = [1,2,3,4,5,6,7,8,9,10];
   total: TotalFoodComponentsModel;
   constructor(private _foodService: FoodService) { }
@@ -32,8 +33,6 @@ export class CalculatorComponent implements OnInit {
 
   //public methods
   public addRow() {
-    console.log('AddRow');
-
     let newRow = new FoodComponentsModel();
     newRow.tableId = this.tableIdCounter;
     this.tableIdCounter ++;
@@ -44,7 +43,6 @@ export class CalculatorComponent implements OnInit {
 
   public removeRow(): void{
     if(this.ELEMENT_DATA.length){
-      console.log('DeleteRow');
       this.ELEMENT_DATA.pop();
       this.tableIdCounter --;
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
@@ -95,8 +93,14 @@ export class CalculatorComponent implements OnInit {
     var me = this;
     reader.onload = function () {
       me.foods = me._foodService.loadFood(reader.result.toString());
+      me.fullFoods = me.foods;
     }
     this.hasFileLoad = true;
+  }
+
+  public filterMyOptions(searchInput : string) {
+    this.foods = this.fullFoods;
+    this.foods = this.foods.filter(x => x.name.toLocaleLowerCase().includes(searchInput.toLocaleLowerCase()));
   }
 
   //private methods

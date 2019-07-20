@@ -87,6 +87,7 @@
     "@angular/animations": "^8.1.0",
     "@angular/cdk": "^8.0.2",
     "@angular/material": "^8.0.2",
-    "angular-material-fileupload": "^2.0.0"
+    "angular-material-fileupload": "^2.0.0",
+    "ngx-mat-select-search": "^1.7.6"
   }
 }
