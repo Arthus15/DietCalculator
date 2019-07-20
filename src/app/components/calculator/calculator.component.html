@@ -28,7 +28,10 @@
                                     <mat-select>
                                       <mat-option>
                                           <ngx-mat-select-search [placeholderLabel]="'Buscar...'"
-                                          ngModel (ngModelChange)="filterMyOptions($event)"></ngx-mat-select-search>
+                                                                 [noEntriesFoundLabel]="'No coincide ningún alimento'"
+                                          ngModel (ngModelChange)="filterMyOptions($event)">
+                                          <mat-icon ngxMatSelectSearchClear>cancel</mat-icon>
+                                        </ngx-mat-select-search>
                                       </mat-option>
                                       <mat-option *ngFor="let food of foods" [value]="food" 
                                       (onSelectionChange)="updateFoodData($event,element, food)" > 
