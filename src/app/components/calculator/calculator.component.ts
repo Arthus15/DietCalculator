@@ -55,8 +55,8 @@ export class CalculatorComponent implements OnInit {
       return;
     }
 
-    if(food.quantity <= 0 || food.quantity == undefined){
-      food.quantity = 1;    
+    if(food.quantity == undefined){
+      food.quantity = 0;    
     }    
 
     if(foodData == null){
