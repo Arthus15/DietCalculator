@@ -2,9 +2,9 @@ import { FoodService } from './../../providers/food.service';
 import { FoodComponentsModel, FoodDataModel, TotalFoodComponentsModel } from './../../models/calculator-model';
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { ElectronService } from '../../providers/electron.service';
 import { MatOptionSelectionChange } from '@angular/material/core';
 import { FoodConstants } from '../../models/constants';
+import { SelectionModel } from '@angular/cdk/collections';
 
 
 @Component({
@@ -17,13 +17,14 @@ export class CalculatorComponent implements OnInit {
   hasFileLoad : boolean = false;
   tableIdCounter: number;
   ELEMENT_DATA: FoodComponentsModel[] = [];
-  displayedColumns: string[] = ['quantity', 'food', 'proteins', 'fat','hydrates','kcal'];
+  displayedColumns: string[] = ['select','quantity', 'food', 'proteins', 'fat','hydrates','kcal'];
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-  // foods: FoodDataModel[] = [{name: 'Pollo', weight: 100,weightUnit: 'gr', proteins: 22.2, fat: 4.3, hydrates: 0}, {name: 'Ternera', weight: 100,weightUnit: 'gr', proteins: 52.2, fat: 2.3, hydrates: 0}];
   foods: FoodDataModel[] = []
   fullFoods: FoodDataModel[] = []
   quantities: number[] = [1,2,3,4,5,6,7,8,9,10];
   total: TotalFoodComponentsModel;
+  selection = new SelectionModel<FoodComponentsModel>(true, []);
+
   constructor(private _foodService: FoodService) { }
 
   ngOnInit() {
@@ -55,8 +56,8 @@ export class CalculatorComponent implements OnInit {
       return;
     }
 
-    if(food.quantity <= 0 || food.quantity == undefined){
-      food.quantity = 1;    
+    if(food.quantity == undefined){
+      food.quantity = 0;    
     }    
 
     if(foodData == null){
@@ -103,6 +104,45 @@ export class CalculatorComponent implements OnInit {
     this.foods = this.foods.filter(x => x.name.toLocaleLowerCase().includes(searchInput.toLocaleLowerCase()));
   }
 
+  public deleteSelectedRows() : void {
+    var noSelectedFoods: FoodComponentsModel[] = [];
+
+    for(var i = 0; i < this.ELEMENT_DATA.length; i++){
+      let row = this.ELEMENT_DATA[i];
+      if(!this.selection.isSelected(row) && row !== undefined){
+        row.tableId = i;
+        noSelectedFoods.push(row);
+      }
+    }
+
+    this.ELEMENT_DATA = noSelectedFoods;
+    this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+  }
+
+  //Select rows
+
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  masterToggle() {
+    this.isAllSelected() ?
+        this.selection.clear() :
+        this.dataSource.data.forEach(row => this.selection.select(row));
+  }
+
+  /** The label for the checkbox on the passed row */
+  checkboxLabel(row?: FoodComponentsModel): string {
+    if (!row) {
+      return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
+    }
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${this.ELEMENT_DATA.indexOf(row) + 1}`;
+  }
+
   //private methods
   private getIndexOfElementByTableId(tableId: number): number{
     let updateItem = this.ELEMENT_DATA.find(x => x.tableId == tableId);
@@ -112,18 +152,18 @@ export class CalculatorComponent implements OnInit {
   }
 
   private fillFoodData(food: FoodComponentsModel, foodData: FoodDataModel){
-    food.fat = foodData.fat * food.quantity;
-    food.hydrates = foodData.hydrates * food.quantity;
-    food.proteins = foodData.proteins * food.quantity;
+    food.fat = parseFloat((foodData.fat * food.quantity).toFixed(2));
+    food.hydrates = parseFloat((foodData.hydrates * food.quantity).toFixed(2));
+    food.proteins = parseFloat((foodData.proteins * food.quantity).toFixed(2));
     food.food = foodData.name;
-    food.kcal =  this.calculateKcal(foodData, food.quantity);
+    food.kcal =  parseFloat(this.calculateKcal(foodData, food.quantity).toFixed(2));
 
     return food;
   }
   private calculateKcal(food: FoodDataModel, quantity: number): number {
-    return quantity * ((food.proteins * FoodConstants.PROTEINS_PARAMETER) 
+    return (quantity * ((food.proteins * FoodConstants.PROTEINS_PARAMETER) 
                           + (food.hydrates * FoodConstants.HYDRATES_PARAMETER) 
-                          + (food.fat * FoodConstants.FAT_PARAMETER));
+                          + (food.fat * FoodConstants.FAT_PARAMETER)));
   }
 
   private getFoodDataByName(name: string): FoodDataModel {
@@ -131,10 +171,10 @@ export class CalculatorComponent implements OnInit {
   }
 
   private UpdateTotal(): void {
-    this.total.totalKcal = this.ELEMENT_DATA.map(x => x.kcal).reduce((acc, value) => acc + value, 0);
-    this.total.totalProteins = this.ELEMENT_DATA.map(x => x.proteins).reduce((acc, value) => acc + value, 0);
-    this.total.totalHydrates = this.ELEMENT_DATA.map(x => x.hydrates).reduce((acc, value) => acc + value, 0);
-    this.total.totalFat = this.ELEMENT_DATA.map(x => x.fat).reduce((acc, value) => acc + value, 0);
+    this.total.totalKcal = parseFloat(this.ELEMENT_DATA.map(x => x.kcal).reduce((acc, value) => acc + value, 0).toFixed(2));
+    this.total.totalProteins = parseFloat(this.ELEMENT_DATA.map(x => x.proteins).reduce((acc, value) => acc + value, 0).toFixed(2));
+    this.total.totalHydrates = parseFloat(this.ELEMENT_DATA.map(x => x.hydrates).reduce((acc, value) => acc + value, 0).toFixed(2));
+    this.total.totalFat = parseFloat(this.ELEMENT_DATA.map(x => x.fat).reduce((acc, value) => acc + value, 0).toFixed(2));
   }
 }
 
