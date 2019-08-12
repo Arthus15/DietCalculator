@@ -1,0 +1,66 @@
+<div>
+  <mat-card>
+    <mat-card-header>
+        <mat-card-title>Calculator</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+        <!--- Note that these columns can be defined in any order.
+              The actual rendered columns are set as a property on the row definition" -->
+      
+        <!-- Food Column -->
+        <ng-container matColumnDef="food">
+          <th mat-header-cell *matHeaderCellDef>Alimento</th>
+          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        </ng-container>
+      
+        <!-- Name Column -->
+        <ng-container matColumnDef="unit">
+          <th mat-header-cell *matHeaderCellDef> Unidad </th>
+          <td mat-cell *matCellDef="let element"> {{element.weight}} {{element.weightUnit}} </td>
+        </ng-container>
+      
+        <!-- Weight Column -->
+        <ng-container matColumnDef="weight">
+          <th mat-header-cell *matHeaderCellDef> Weight </th>
+          <td mat-cell *matCellDef="let element"> {{element.weight}} </td>
+        </ng-container>
+      
+        <!-- Proteins Column -->
+        <ng-container matColumnDef="proteins">
+          <th mat-header-cell *matHeaderCellDef> Proteínas </th>
+          <td mat-cell *matCellDef="let element"> {{element.proteins}} </td>
+        </ng-container>
+
+        <!-- Fat Column -->
+        <ng-container matColumnDef="fat">
+          <th mat-header-cell *matHeaderCellDef> Grasas </th>
+          <td mat-cell *matCellDef="let element"> {{element.fat}} </td>
+        </ng-container>
+
+        <!-- Symbol Column -->
+        <ng-container matColumnDef="hydrates">
+          <th mat-header-cell *matHeaderCellDef> Hidratos </th>
+          <td mat-cell *matCellDef="let element"> {{element.hydrates}} </td>
+        </ng-container>        
+      
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>      
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    </mat-card-content>
+</mat-card>
+</div>
+<div *ngIf="!hasFileLoad">
+  <mat-card>
+    <mat-card-header>
+        <mat-card-title>Selecciona archivo</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      Por favor, selecciona el fichero que contiene los datos de los alimentos: 
+      <input id="file-upload" type="file" accept=".txt" (change)="fileUpload($event)">
+      
+    </mat-card-content>
+</mat-card>
+</div>
